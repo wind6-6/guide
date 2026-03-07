@@ -1,1 +1,0 @@
-print('Holyce：hello world！')
