@@ -109,7 +109,7 @@
               </div>
               <div class="food-stats">
                 <span class="stat-item">
-                  <el-icon><Fire /></el-icon>
+                  <el-icon><CollectionTag /></el-icon>
                   {{ food.hotness }} 热度
                 </span>
                 <span class="stat-item">
@@ -182,7 +182,7 @@
 </template>
 
 <script>
-import { Food, Search, Dish, Fire, View, MapLocation, Share } from '@element-plus/icons-vue'
+import { Food, Search, Dish, CollectionTag, View, MapLocation, Share } from '@element-plus/icons-vue'
 
 export default {
   name: 'FoodView',
@@ -190,7 +190,7 @@ export default {
     Food,
     Search,
     Dish,
-    Fire,
+    CollectionTag,
     View,
     MapLocation,
     Share

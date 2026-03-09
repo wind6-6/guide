@@ -32,7 +32,12 @@ def get_recommend_list():
                 'description': scenic.description,
                 'hotness': scenic.hotness,
                 'rating': scenic.rating,
-                'category': scenic.category
+                'category': scenic.category,
+                'ticket_price': scenic.ticket_price,
+                'open_time': scenic.open_time,
+                'address': scenic.address,
+                'lat': scenic.lat,
+                'lng': scenic.lng
             })
         
         return jsonify({'status': 200, 'data': data})

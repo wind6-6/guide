@@ -48,7 +48,7 @@
             <el-form-item label="规划策略">
               <el-radio-group v-model="routeForm.strategy" class="strategy-group">
                 <el-radio-button label="distance">
-                  <el-icon><Ruler /></el-icon>
+                  <el-icon><ScaleToOriginal /></el-icon>
                   最短距离
                 </el-radio-button>
                 <el-radio-button label="time">
@@ -123,7 +123,7 @@
             </div>
             <el-divider></el-divider>
             <div class="result-item">
-              <el-icon><Ruler /></el-icon>
+              <el-icon><ScaleToOriginal /></el-icon>
               <div class="result-info">
                 <div class="result-label">总距离</div>
                 <div class="result-value">{{ formatDistance(routeResult.distance) }}</div>
@@ -234,7 +234,7 @@
 </template>
 
 <script>
-import { MapLocation, Setting, Location, Flag, Ruler, Timer, Check, Compass, DataAnalysis, List } from '@element-plus/icons-vue'
+import { MapLocation, Setting, Location, Flag, ScaleToOriginal, Timer, Check, Compass, DataAnalysis, List } from '@element-plus/icons-vue'
 import MapViewer from '../../components/MapViewer.vue'
 
 export default {
@@ -244,7 +244,7 @@ export default {
     Setting,
     Location,
     Flag,
-    Ruler,
+    ScaleToOriginal,
     Timer,
     Check,
     Compass,

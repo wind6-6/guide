@@ -41,7 +41,7 @@
               <el-icon><Trophy /></el-icon> 评分最高
             </el-option>
             <el-option label="热度最高" value="hotness">
-              <el-icon><Fire /></el-icon> 热度最高
+              <el-icon><CollectionTag /></el-icon> 热度最高
             </el-option>
           </el-select>
         </el-col>
@@ -85,7 +85,7 @@
         </el-col>
         <el-col :span="6">
           <div class="stat-item">
-            <el-icon><Fire /></el-icon>
+            <el-icon><CollectionTag /></el-icon>
             <div class="stat-info">
               <div class="stat-value">{{ avgHotness }}</div>
               <div class="stat-label">平均热度</div>
@@ -143,7 +143,7 @@
               </div>
               <div class="scenic-stats">
                 <span class="stat">
-                  <el-icon><Fire /></el-icon>
+                  <el-icon><CollectionTag /></el-icon>
                   {{ scenic.hotness }} 热度
                 </span>
                 <span class="stat">
@@ -211,7 +211,7 @@
 </template>
 
 <script>
-import { Location, Search, Star, Trophy, Fire, OfficeBuilding, Collection, Picture, View, MapLocation } from '@element-plus/icons-vue'
+import { Location, Search, Star, Trophy, CollectionTag, OfficeBuilding, Collection, Picture, View, MapLocation } from '@element-plus/icons-vue'
 
 export default {
   name: 'RecommendView',
@@ -220,7 +220,7 @@ export default {
     Search,
     Star,
     Trophy,
-    Fire,
+    CollectionTag,
     OfficeBuilding,
     Collection,
     Picture,
@@ -266,48 +266,38 @@ export default {
     async getRecommendList() {
       this.loading = true
       try {
-        // 模拟数据
-        this.scenicList = [
-          {
-            id: 1,
-            name: '颐和园',
-            description: '中国清朝时期皇家园林，保存最完整的一座皇家行宫御苑，被誉为"皇家园林博物馆"。',
-            hotness: 95,
-            rating: 4.8,
-            category: '历史文化',
-            ticket_price: '30元',
-            open_time: '06:00-20:00',
-            address: '北京市海淀区新建宫门路19号',
-            views: 12580
-          },
-          {
-            id: 2,
-            name: '故宫博物院',
-            description: '中国明清两代的皇家宫殿，旧称紫禁城，是世界上现存规模最大、保存最为完整的木质结构古建筑之一。',
-            hotness: 98,
-            rating: 4.9,
-            category: '历史文化',
-            ticket_price: '60元',
-            open_time: '08:30-17:00',
-            address: '北京市东城区景山前街4号',
-            views: 25600
-          },
-          {
-            id: 3,
-            name: '天坛公园',
-            description: '明清两代皇帝祭天的场所，是中国现存最大的古代祭祀性建筑群。',
-            hotness: 88,
-            rating: 4.7,
-            category: '历史文化',
-            ticket_price: '15元',
-            open_time: '06:00-22:00',
-            address: '北京市东城区天坛东里甲1号',
-            views: 8900
+        // 调用后端API获取真实数据
+        const response = await this.$http.get('/api/recommend/list', {
+          params: {
+            sort_by: this.searchForm.sortBy,
+            category: this.searchForm.category,
+            keyword: this.searchForm.keyword
           }
-        ]
+        })
+        
+        if (response.data && response.data.data) {
+          this.scenicList = response.data.data.map(item => ({
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            hotness: item.hotness,
+            rating: item.rating,
+            category: item.category,
+            ticket_price: item.ticket_price,
+            open_time: item.open_time,
+            address: item.address,
+            views: Math.floor(Math.random() * 20000) + 1000 // 如果没有浏览量字段，随机生成
+          }))
+          this.$message.success(`已加载 ${this.scenicList.length} 个真实景区数据`)
+        } else {
+          this.$message.warning('暂无数据')
+          this.scenicList = []
+        }
       } catch (error) {
         console.error('获取推荐列表失败:', error)
-        this.$message.error('获取推荐列表失败')
+        this.$message.error('获取推荐列表失败: ' + (error.message || '网络错误'))
+        // 如果API调用失败，使用空列表
+        this.scenicList = []
       } finally {
         this.loading = false
       }

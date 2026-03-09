@@ -10,15 +10,21 @@ class SortAlgorithm:
             return sorted(items, key=key_func, reverse=True)
         
         # 使用堆来高效获取前N个
+        # 使用计数器来确保元组可比较（避免对象直接比较）
+        counter = 0
         heap = []
         for item in items:
             value = key_func(item)
             if len(heap) < n:
-                heapq.heappush(heap, (value, item))
-            elif value > heap[0][0]:
-                heapq.heappushpop(heap, (value, item))
+                # 使用负值实现最大堆效果，并添加计数器确保唯一性
+                heapq.heappush(heap, (-value, counter, item))
+                counter += 1
+            elif -value < heap[0][0]:  # 比较负值（即原值更大）
+                heapq.heappushpop(heap, (-value, counter, item))
+                counter += 1
         
-        return [item for _, item in sorted(heap, key=lambda x: x[0], reverse=True)]
+        # 返回排序后的结果（从高到低）
+        return [item for _, _, item in sorted(heap, key=lambda x: x[0])]
     
     @staticmethod
     def weighted_sort(items, weights=None):
@@ -38,3 +44,54 @@ class SortAlgorithm:
             return score
         
         return sorted(items, key=key_func, reverse=True)
+    
+    @staticmethod
+    def quick_sort(items, key_func=None):
+        """快速排序"""
+        if key_func is None:
+            key_func = lambda x: x
+        
+        if len(items) <= 1:
+            return items
+        
+        pivot = items[len(items) // 2]
+        pivot_key = key_func(pivot)
+        
+        left = [x for x in items if key_func(x) < pivot_key]
+        middle = [x for x in items if key_func(x) == pivot_key]
+        right = [x for x in items if key_func(x) > pivot_key]
+        
+        return SortAlgorithm.quick_sort(left, key_func) + middle + SortAlgorithm.quick_sort(right, key_func)
+    
+    @staticmethod
+    def merge_sort(items, key_func=None):
+        """归并排序"""
+        if key_func is None:
+            key_func = lambda x: x
+        
+        if len(items) <= 1:
+            return items
+        
+        mid = len(items) // 2
+        left = SortAlgorithm.merge_sort(items[:mid], key_func)
+        right = SortAlgorithm.merge_sort(items[mid:], key_func)
+        
+        return SortAlgorithm._merge(left, right, key_func)
+    
+    @staticmethod
+    def _merge(left, right, key_func):
+        """合并两个有序列表"""
+        result = []
+        i = j = 0
+        
+        while i < len(left) and j < len(right):
+            if key_func(left[i]) <= key_func(right[j]):
+                result.append(left[i])
+                i += 1
+            else:
+                result.append(right[j])
+                j += 1
+        
+        result.extend(left[i:])
+        result.extend(right[j:])
+        return result
