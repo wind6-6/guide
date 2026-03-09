@@ -264,23 +264,15 @@ export default {
       transportComparison: [],
       planning: false,
       mapType: 'standard',
-      mapNodes: [
-        { id: 'A', name: '起点', x: 100, y: 300, type: 'current', icon: '📍' },
-        { id: 'B', name: '节点1', x: 250, y: 200, type: 'node' },
-        { id: 'C', name: '节点2', x: 400, y: 300, type: 'node' },
-        { id: 'D', name: '节点3', x: 550, y: 200, type: 'node' },
-        { id: 'E', name: '终点', x: 700, y: 300, type: 'building', icon: '🏁' }
-      ],
-      mapEdges: [
-        { x1: 100, y1: 300, x2: 250, y2: 200, color: '#ccc' },
-        { x1: 250, y1: 200, x2: 400, y2: 300, color: '#ccc' },
-        { x1: 400, y1: 300, x2: 550, y2: 200, color: '#ccc' },
-        { x1: 550, y1: 200, x2: 700, y2: 300, color: '#ccc' },
-        { x1: 100, y1: 300, x2: 400, y2: 300, color: '#ddd', dashed: true },
-        { x1: 250, y1: 200, x2: 550, y2: 200, color: '#ddd', dashed: true }
-      ],
-      mapPath: []
+      mapNodes: [],
+      mapEdges: [],
+      mapPath: [],
+      realScenics: [], // 存储真实景区数据
+      realRoads: [] // 存储真实道路数据
     }
+  },
+  mounted() {
+    this.loadRealMapData()
   },
   methods: {
     async handlePlan() {
@@ -369,6 +361,127 @@ export default {
         return `${hours}小时${mins}分钟`
       }
       return Math.round(minutes) + '分钟'
+    },
+    
+    // 加载真实地图数据
+    async loadRealMapData() {
+      try {
+        console.log('开始加载地图数据...')
+        
+        // 获取真实景区数据
+        console.log('请求景区数据...')
+        const scenicResponse = await this.$http.get('/api/recommend/list')
+        console.log('景区数据响应:', scenicResponse)
+        
+        if (scenicResponse.data && scenicResponse.data.data) {
+          this.realScenics = scenicResponse.data.data
+          console.log(`获取到 ${this.realScenics.length} 个景区`)
+          // 将景区转换为地图节点（使用真实经纬度）
+          this.mapNodes = this.convertScenicsToNodes(this.realScenics)
+          console.log(`转换了 ${this.mapNodes.length} 个地图节点`)
+        } else {
+          console.warn('景区数据格式不正确:', scenicResponse.data)
+        }
+        
+        // 获取真实道路数据
+        console.log('请求道路数据...')
+        const roadResponse = await this.$http.get('/api/route/roads')
+        console.log('道路数据响应:', roadResponse)
+        
+        if (roadResponse.data && roadResponse.data.data) {
+          this.realRoads = roadResponse.data.data
+          console.log(`获取到 ${this.realRoads.length} 条道路`)
+          // 将道路转换为地图边
+          this.mapEdges = this.convertRoadsToEdges(this.realRoads)
+          console.log(`转换了 ${this.mapEdges.length} 条地图边`)
+        } else {
+          console.warn('道路数据格式不正确:', roadResponse.data)
+        }
+        
+        if (this.mapNodes.length > 0) {
+          this.$message.success(`已加载 ${this.mapNodes.length} 个真实景区和 ${this.mapEdges.length} 条道路`)
+        } else {
+          throw new Error('没有获取到有效的地图数据')
+        }
+      } catch (error) {
+        console.error('加载地图数据失败:', error)
+        console.error('错误详情:', error.message, error.response?.data)
+        this.$message.error('加载地图数据失败: ' + (error.message || '网络错误'))
+        // 使用默认数据
+        this.loadDefaultMapData()
+      }
+    },
+    
+    // 将景区数据转换为地图节点
+    convertScenicsToNodes(scenics) {
+      // 只取前20个景区作为地图节点（避免太多节点导致地图混乱）
+      const selectedScenics = scenics.slice(0, 20)
+      
+      return selectedScenics.map((scenic) => {
+        // 将经纬度转换为地图坐标（简化投影）
+        // 北京大致范围：北纬39.4-41.6，东经115.7-117.4
+        const lat = scenic.lat || 39.9 + (Math.random() - 0.5) * 0.5
+        const lng = scenic.lng || 116.4 + (Math.random() - 0.5) * 0.5
+        
+        // 将经纬度转换为画布坐标（800x600画布）
+        const x = ((lng - 115.7) / (117.4 - 115.7)) * 800
+        const y = 600 - ((lat - 39.4) / (41.6 - 39.4)) * 600
+        
+        return {
+          id: `scenic-${scenic.id}`,
+          name: scenic.name,
+          x: Math.max(50, Math.min(750, x)),
+          y: Math.max(50, Math.min(550, y)),
+          type: 'building',
+          icon: '🏛️',
+          lat: lat,
+          lng: lng,
+          category: scenic.category
+        }
+      })
+    },
+    
+    // 将道路数据转换为地图边
+    convertRoadsToEdges(roads) {
+      // 只取前50条道路
+      const selectedRoads = roads.slice(0, 50)
+      
+      return selectedRoads.map(road => {
+        // 找到道路起点和终点对应的节点
+        const startNode = this.mapNodes.find(n => n.name.includes(road.start_node) || road.start_node.includes(n.name))
+        const endNode = this.mapNodes.find(n => n.name.includes(road.end_node) || road.end_node.includes(n.name))
+        
+        if (startNode && endNode) {
+          return {
+            x1: startNode.x,
+            y1: startNode.y,
+            x2: endNode.x,
+            y2: endNode.y,
+            color: road.crowd_level > 3 ? '#f56c6c' : '#67c23a',
+            distance: road.distance,
+            crowd_level: road.crowd_level
+          }
+        }
+        return null
+      }).filter(edge => edge !== null)
+    },
+    
+    // 加载默认地图数据（当API失败时使用）
+    loadDefaultMapData() {
+      this.mapNodes = [
+        { id: 'A', name: '故宫博物院', x: 400, y: 300, type: 'building', icon: '🏛️' },
+        { id: 'B', name: '颐和园', x: 200, y: 150, type: 'building', icon: '🏛️' },
+        { id: 'C', name: '天坛公园', x: 600, y: 400, type: 'building', icon: '🏛️' },
+        { id: 'D', name: '北海公园', x: 300, y: 250, type: 'building', icon: '🏛️' },
+        { id: 'E', name: '景山公园', x: 380, y: 280, type: 'building', icon: '🏛️' }
+      ]
+      
+      this.mapEdges = [
+        { x1: 400, y1: 300, x2: 380, y2: 280, color: '#67c23a' },
+        { x1: 380, y1: 280, x2: 300, y2: 250, color: '#67c23a' },
+        { x1: 300, y1: 250, x2: 200, y2: 150, color: '#e6a23c' },
+        { x1: 400, y1: 300, x2: 600, y2: 400, color: '#f56c6c' }
+      ]
     }
   }
 }

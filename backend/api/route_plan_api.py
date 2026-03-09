@@ -59,6 +59,31 @@ def plan_route():
     finally:
         session.close()
 
+@route_plan_bp.route('/roads', methods=['GET'])
+def get_roads():
+    """获取所有道路数据（用于地图展示）"""
+    session = get_session()
+    try:
+        roads = session.query(Road).all()
+        
+        data = []
+        for road in roads:
+            data.append({
+                'id': road.id,
+                'start_node': road.start_node,
+                'end_node': road.end_node,
+                'distance': road.distance,
+                'crowd_level': road.crowd_level,
+                'transport_type': road.transport_type if hasattr(road, 'transport_type') else '步行'
+            })
+        
+        return jsonify({
+            'status': 200,
+            'data': data
+        })
+    finally:
+        session.close()
+
 @route_plan_bp.route('/transport-options', methods=['POST'])
 def get_transport_options():
     """获取多种交通工具的路径选项"""
