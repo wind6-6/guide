@@ -3,9 +3,30 @@ import heapq
 from config.algorithm_config import AlgorithmConfig
 
 class ShortestPath:
+    # 交通工具速度配置（km/h）
+    TRANSPORT_SPEED = {
+        '步行': 5.0,
+        '自行车': 15.0,
+        '电瓶车': 25.0,
+        '汽车': 40.0
+    }
+    
     @staticmethod
-    def dijkstra(graph, start, end, weight='distance'):
-        """Dijkstra 最短路径算法"""
+    def dijkstra(graph, start, end, strategy='distance', transport_type='步行'):
+        """
+        Dijkstra 最短路径算法
+        
+        Args:
+            graph: 图结构
+            start: 起点
+            end: 终点
+            strategy: 策略 ('distance'-最短距离, 'time'-最短时间)
+            transport_type: 交通工具 ('步行', '自行车', '电瓶车', '汽车')
+        
+        Returns:
+            path: 路径列表
+            distance: 总距离或时间
+        """
         # 初始化距离字典
         distances = {node: float('inf') for node in graph}
         distances[start] = 0
@@ -15,6 +36,9 @@ class ShortestPath:
         
         # 前驱节点
         previous = {}
+        
+        # 获取交通工具速度
+        speed = ShortestPath.TRANSPORT_SPEED.get(transport_type, 5.0)
         
         while priority_queue:
             current_distance, current_node = heapq.heappop(priority_queue)
@@ -29,16 +53,21 @@ class ShortestPath:
             
             # 遍历邻居节点
             for neighbor, edge in graph[current_node].items():
+                # 检查交通工具是否允许
+                allowed_transport = edge.get('transport_type', '步行')
+                if transport_type != '步行' and allowed_transport == '步行':
+                    continue  # 非步行交通工具不能走步行专用道
+                
                 # 计算权重
-                if weight == 'distance':
+                if strategy == 'distance':
                     edge_weight = edge['distance']
-                elif weight == 'time':
+                elif strategy == 'time':
                     # 考虑拥挤度和速度
-                    speed = AlgorithmConfig.IDEAL_SPEED
-                    crowd_factor = 1 + (edge.get('crowd_level', 1) - 1) * AlgorithmConfig.CROWD_PENALTY
+                    crowd_level = edge.get('crowd_level', 1)
+                    crowd_factor = 1 + (crowd_level - 1) * AlgorithmConfig.CROWD_PENALTY
                     edge_weight = (edge['distance'] / 1000) / speed * 60 * crowd_factor
                 else:
-                    edge_weight = edge.get(weight, edge['distance'])
+                    edge_weight = edge.get(strategy, edge['distance'])
                 
                 distance = current_distance + edge_weight
                 
@@ -57,3 +86,25 @@ class ShortestPath:
         path.reverse()
         
         return path, distances[end]
+    
+    @staticmethod
+    def get_path_with_transport_options(graph, start, end, strategy='distance'):
+        """
+        获取多种交通工具的路径选项
+        
+        Returns:
+            dict: 各交通工具的路径信息
+        """
+        results = {}
+        for transport_type in ShortestPath.TRANSPORT_SPEED.keys():
+            try:
+                path, distance = ShortestPath.dijkstra(graph, start, end, strategy, transport_type)
+                if path and len(path) > 1:
+                    results[transport_type] = {
+                        'path': path,
+                        'distance': distance if strategy == 'distance' else round(distance, 2),
+                        'time': round((distance / 1000) / ShortestPath.TRANSPORT_SPEED[transport_type] * 60, 2) if strategy == 'distance' else round(distance, 2)
+                    }
+            except:
+                continue
+        return results

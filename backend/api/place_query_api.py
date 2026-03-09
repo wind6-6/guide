@@ -48,27 +48,50 @@ def search_place():
 
 @place_query_bp.route('/nearby', methods=['GET'])
 def get_nearby_facilities():
-    """附近设施"""
-    latitude = float(request.args.get('latitude', 0))
-    longitude = float(request.args.get('longitude', 0))
+    """附近设施（使用路径距离）"""
+    location = request.args.get('location', '')  # 当前位置节点
     radius = float(request.args.get('radius', 1000))  # 默认1000米
+    facility_type = request.args.get('type')  # 设施类型过滤
+    
+    if not location:
+        return jsonify({'status': 400, 'msg': '当前位置不能为空'})
     
     session = get_session()
     try:
-        # 获取所有设施
-        facilities = session.query(Facility).all()
+        # 获取所有道路构建图
+        roads = session.query(Road).all()
+        graph = {}
+        for road in roads:
+            if road.start_node not in graph:
+                graph[road.start_node] = {}
+            graph[road.start_node][road.end_node] = {
+                'distance': road.distance,
+                'crowd_level': road.crowd_level
+            }
         
-        # 简单的距离过滤（实际应用中应使用地理距离计算）
+        # 获取设施
+        query = session.query(Facility)
+        if facility_type:
+            query = query.filter_by(type=facility_type)
+        facilities = query.all()
+        
+        # 使用路径距离计算
         nearby_facilities = []
         for facility in facilities:
-            # 这里使用模拟距离
-            distance = 500  # 模拟距离
-            if distance <= radius:
-                facility.distance = distance
-                nearby_facilities.append(facility)
+            if hasattr(facility, 'location') and facility.location:
+                try:
+                    # 使用最短路径算法计算路径距离
+                    _, distance = ShortestPath.dijkstra(graph, location, facility.location, 'distance')
+                    if distance <= radius:
+                        facility.distance = distance
+                        nearby_facilities.append(facility)
+                except:
+                    # 如果无法计算路径距离，跳过该设施
+                    continue
         
-        # 按距离排序
+        # 按距离排序（只取前10）
         nearby_facilities.sort(key=lambda x: x.distance)
+        nearby_facilities = nearby_facilities[:10]  # 只排前10
         
         # 构建响应数据
         data = []
@@ -77,7 +100,8 @@ def get_nearby_facilities():
                 'id': facility.id,
                 'name': facility.name,
                 'type': facility.type,
-                'distance': facility.distance
+                'distance': facility.distance,
+                'location': facility.location
             })
         
         return jsonify({'status': 200, 'data': data})

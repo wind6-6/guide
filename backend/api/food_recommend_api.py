@@ -14,8 +14,9 @@ def get_session():
 
 @food_recommend_bp.route('/list', methods=['GET'])
 def get_food_list():
-    """获取美食列表"""
+    """获取美食列表（只排前10）"""
     cuisine = request.args.get('cuisine')
+    keyword = request.args.get('keyword', '')  # 模糊查询关键词
     
     session = get_session()
     try:
@@ -27,8 +28,12 @@ def get_food_list():
         
         foods = query.all()
         
-        # 按热度和评分排序
-        sorted_foods = SortAlgorithm.weighted_sort(foods)
+        # 模糊查询
+        if keyword:
+            foods = SearchAlgorithm.fuzzy_search(foods, 'name', keyword)
+        
+        # 按热度和评分排序（只排前10）
+        sorted_foods = SortAlgorithm.top_n_sort(foods, lambda x: x.hotness * 0.3 + x.rating * 0.7, n=10)
         
         # 构建响应数据
         data = []

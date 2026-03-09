@@ -19,6 +19,42 @@ const routes = [
     name: 'register',
     component: () => import('../pages/User/RegisterView.vue'),
     meta: { title: '注册', public: true }
+  },
+  {
+    path: '/recommend',
+    name: 'recommend',
+    component: () => import('../pages/Recommend/RecommendView.vue'),
+    meta: { title: '旅游推荐' }
+  },
+  {
+    path: '/route-plan',
+    name: 'routePlan',
+    component: () => import('../pages/RoutePlan/RoutePlanView.vue'),
+    meta: { title: '路线规划' }
+  },
+  {
+    path: '/place-query',
+    name: 'placeQuery',
+    component: () => import('../pages/PlaceQuery/PlaceQueryView.vue'),
+    meta: { title: '场所查询' }
+  },
+  {
+    path: '/diary',
+    name: 'diary',
+    component: () => import('../pages/Diary/DiaryView.vue'),
+    meta: { title: '旅游日记' }
+  },
+  {
+    path: '/food',
+    name: 'food',
+    component: () => import('../pages/Food/FoodView.vue'),
+    meta: { title: '美食推荐' }
+  },
+  {
+    path: '/user',
+    name: 'user',
+    component: () => import('../pages/User/UserCenterView.vue'),
+    meta: { title: '用户中心' }
   }
 ]
 

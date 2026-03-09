@@ -14,14 +14,14 @@ def get_session():
 
 @tourist_recommend_bp.route('/list', methods=['GET'])
 def get_recommend_list():
-    """获取推荐列表"""
+    """获取推荐列表（只排前10）"""
     session = get_session()
     try:
         # 获取所有景区
         scenics = session.query(Scenic).all()
         
-        # 按热度和评分排序
-        sorted_scenics = SortAlgorithm.weighted_sort(scenics)
+        # 按热度和评分排序（只排前10）
+        sorted_scenics = SortAlgorithm.top_n_sort(scenics, lambda x: x.hotness * 0.3 + x.rating * 0.7, n=10)
         
         # 构建响应数据
         data = []
