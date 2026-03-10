@@ -16,13 +16,12 @@ class SearchAlgorithm:
         
         for item in items:
             value = str(getattr(item, field)).lower()
-            # 计算匹配度
-            match = re.search(keyword, value)
-            if match:
+            # 计算匹配度 - 使用简单的包含匹配，避免正则表达式错误
+            if keyword in value:
                 # 简单的匹配度计算
                 match_ratio = len(keyword) / len(value)
-                if match_ratio >= threshold:
-                    results.append((match_ratio, item))
+                # 降低匹配度门槛，只要包含关键字就返回
+                results.append((match_ratio, item))
         
         # 按匹配度排序
         results.sort(key=lambda x: x[0], reverse=True)

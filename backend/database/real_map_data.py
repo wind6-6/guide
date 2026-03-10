@@ -396,15 +396,23 @@ def generate_extended_scenics():
     existing_names = {s["name"] for s in base_scenics}
     counter = 1
     
+    # 景点名称模板
+    scenic_templates = [
+        "{district}公园", "{district}博物馆", "{district}纪念馆", "{district}文化中心",
+        "{district}植物园", "{district}动物园", "{district}主题公园", "{district}历史遗迹",
+        "{district}艺术中心", "{district}科技中心", "{district}体育中心", "{district}休闲中心"
+    ]
+    
     while len(base_scenics) < 200:
         district = random.choice(districts)
         category = random.choice(categories)
+        template = random.choice(scenic_templates)
         
-        # 生成随机坐标（北京地区大致范围）
-        lat = random.uniform(39.6, 40.2)
-        lng = random.uniform(115.8, 116.8)
+        # 生成随机坐标（扩大北京地区范围）
+        lat = random.uniform(39.4, 41.6)  # 扩大纬度范围
+        lng = random.uniform(115.7, 117.4)  # 扩大经度范围
         
-        name = f"{district}景点{counter}"
+        name = template.format(district=district)
         if name not in existing_names:
             base_scenics.append({
                 "name": name,

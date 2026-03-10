@@ -1,0 +1,7 @@
+2026-03-09 22:41:37,025 - tourism_system - ERROR - 数据库初始化失败: 'floor' is an invalid keyword argument for Building
+2026-03-09 22:41:37,025 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-09 22:41:37,510 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-09 22:41:37,510 - tourism_system - INFO - 启动服务，端口: 8080

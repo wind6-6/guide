@@ -7,7 +7,7 @@ class ServerConfig:
     DEBUG = True
     
     # 跨域配置
-    CORS_ORIGINS = ['http://localhost:8081', 'http://127.0.0.1:8081', 'http://localhost:8083', 'http://127.0.0.1:8083', 'http://localhost:8084', 'http://127.0.0.1:8084']  # 前端运行地址
+    CORS_ORIGINS = ['http://localhost:8081', 'http://127.0.0.1:8081', 'http://localhost:8082', 'http://127.0.0.1:8082', 'http://localhost:8083', 'http://127.0.0.1:8083', 'http://localhost:8084', 'http://127.0.0.1:8084']  # 前端运行地址
     CORS_SUPPORTS_CREDENTIALS = True
     
     # 项目根路径

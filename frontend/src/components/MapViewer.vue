@@ -12,16 +12,14 @@
         
         <!-- 边（道路） -->
         <g class="edges">
-          <line
+          <path
             v-for="(edge, index) in edges"
             :key="'edge-'+index"
-            :x1="edge.x1"
-            :y1="edge.y1"
-            :x2="edge.x2"
-            :y2="edge.y2"
+            :d="getRoadPath(edge)"
             :stroke="edge.color || '#ccc'"
             :stroke-width="edge.width || 3"
             :stroke-dasharray="edge.dashed ? '5,5' : '0'"
+            fill="none"
             class="road-line"
           />
         </g>
@@ -68,15 +66,16 @@
               v-if="node.icon"
               text-anchor="middle"
               dominant-baseline="central"
-              font-size="14"
+              font-size="12"
               fill="#fff"
               class="node-icon"
             >{{ node.icon }}</text>
             <!-- 节点标签 -->
             <text
-              y="-20"
+              v-if="scale > 1.2 || hoveredNode === node"
+              y="-15"
               text-anchor="middle"
-              :font-size="hoveredNode === node ? 14 : 12"
+              :font-size="hoveredNode === node ? 12 : 10"
               :font-weight="hoveredNode === node ? 'bold' : 'normal'"
               fill="#333"
               class="node-label"
@@ -89,9 +88,9 @@
     <!-- 地图控制面板 -->
     <div class="map-controls">
       <el-button-group vertical>
-        <el-button size="small" @click="zoomIn" :icon="Plus" circle></el-button>
-        <el-button size="small" @click="zoomOut" :icon="Minus" circle></el-button>
-        <el-button size="small" @click="resetView" :icon="RefreshRight" circle></el-button>
+        <el-button size="small" @click="zoomIn" icon="Plus" circle></el-button>
+        <el-button size="small" @click="zoomOut" icon="Minus" circle></el-button>
+        <el-button size="small" @click="resetView" icon="RefreshRight" circle></el-button>
       </el-button-group>
     </div>
     
@@ -144,14 +143,17 @@
 </template>
 
 <script>
-import { MapLocation, Timer, Bicycle } from '@element-plus/icons-vue'
+import { MapLocation, Timer, Bicycle, Plus, Minus, RefreshRight } from '@element-plus/icons-vue'
 
 export default {
   name: 'MapViewer',
   components: {
     MapLocation,
     Timer,
-    Bicycle
+    Bicycle,
+    Plus,
+    Minus,
+    RefreshRight
   },
   props: {
     nodes: {
@@ -188,7 +190,8 @@ export default {
       lastMouseX: 0,
       lastMouseY: 0,
       hoveredNode: null,
-      viewBox: '0 0 800 600'
+      viewBox: '0 0 800 600',
+      baseViewBox: '0 0 800 600'
     }
   },
   computed: {
@@ -225,16 +228,23 @@ export default {
   },
   methods: {
     updateViewBox() {
-      if (this.nodes.length === 0) return
+      if (this.nodes.length === 0 && this.path.length === 0) return
       
-      const xs = this.nodes.map(n => n.x)
-      const ys = this.nodes.map(n => n.y)
+      // 收集所有节点和路径点的坐标
+      const allPoints = [...this.nodes]
+      if (this.path.length > 0) {
+        allPoints.push(...this.path)
+      }
+      
+      const xs = allPoints.map(p => p.x)
+      const ys = allPoints.map(p => p.y)
       const minX = Math.min(...xs) - 50
       const maxX = Math.max(...xs) + 50
       const minY = Math.min(...ys) - 50
       const maxY = Math.max(...ys) + 50
       
-      this.viewBox = `${minX} ${minY} ${maxX - minX} ${maxY - minY}`
+      this.baseViewBox = `${minX} ${minY} ${maxX - minX} ${maxY - minY}`
+      this.applyTransform()
     },
     getNodeColor(node) {
       if (this.path.length > 0) {
@@ -252,9 +262,9 @@ export default {
       return colors[node.type] || '#909399'
     },
     getNodeRadius(node) {
-      if (node.type === 'current') return 12
-      if (this.hoveredNode === node) return 10
-      return 8
+      if (node.type === 'current') return 10
+      if (this.hoveredNode === node) return 8
+      return 6
     },
     onNodeClick(node) {
       this.$emit('node-click', node)
@@ -271,14 +281,26 @@ export default {
       this.scale = 1
       this.offsetX = 0
       this.offsetY = 0
-      this.updateViewBox()
+      this.applyTransform()
     },
     applyTransform() {
-      // 应用缩放变换
-      const svg = this.$refs.svgMap
-      if (svg) {
-        svg.style.transform = `scale(${this.scale}) translate(${this.offsetX}px, ${this.offsetY}px)`
-      }
+      // 使用 viewBox 实现缩放，而不是 CSS transform
+      // 这样可以确保景点图标大小保持不变
+      const [minX, minY, width, height] = this.baseViewBox.split(' ').map(Number)
+      
+      // 根据缩放比例调整 viewBox
+      const newWidth = width / this.scale
+      const newHeight = height / this.scale
+      
+      // 计算中心点偏移
+      const centerX = minX + width / 2
+      const centerY = minY + height / 2
+      
+      // 应用偏移量
+      const newMinX = centerX - newWidth / 2 + this.offsetX
+      const newMinY = centerY - newHeight / 2 + this.offsetY
+      
+      this.viewBox = `${newMinX} ${newMinY} ${newWidth} ${newHeight}`
     },
     startDrag(e) {
       this.isDragging = true
@@ -311,6 +333,27 @@ export default {
         return `${hours}小时${mins}分钟`
       }
       return Math.round(minutes) + '分钟'
+    },
+    getRoadPath(edge) {
+      // 生成弯曲的道路路径，而不是直线
+      const { x1, y1, x2, y2 } = edge
+      
+      // 计算中心点
+      const cx = (x1 + x2) / 2
+      const cy = (y1 + y2) / 2
+      
+      // 计算偏移量，使道路弯曲
+      const dx = x2 - x1
+      const dy = y2 - y1
+      const length = Math.sqrt(dx * dx + dy * dy)
+      const offset = length * 0.1 // 偏移量为道路长度的10%
+      
+      // 计算控制点，使道路向一侧弯曲
+      const controlX = cx + dy * (offset / length)
+      const controlY = cy - dx * (offset / length)
+      
+      // 返回贝塞尔曲线路径
+      return `M ${x1} ${y1} Q ${controlX} ${controlY} ${x2} ${y2}`
     }
   }
 }

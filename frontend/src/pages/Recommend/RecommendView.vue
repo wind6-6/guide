@@ -305,12 +305,45 @@ export default {
     async handleSearch() {
       this.loading = true
       try {
-        // 模拟搜索
-        await new Promise(resolve => setTimeout(resolve, 500))
-        this.$message.success('搜索完成')
+        let response
+        
+        if (this.searchForm.keyword) {
+          response = await this.$http.post('/api/recommend/search', {
+            keyword: this.searchForm.keyword,
+            category: this.searchForm.category,
+            sort_by: this.searchForm.sortBy === 'comprehensive' ? 'rating' : this.searchForm.sortBy
+          })
+        } else {
+          response = await this.$http.get('/api/recommend/list', {
+            params: {
+              sort_by: this.searchForm.sortBy === 'comprehensive' ? 'rating' : this.searchForm.sortBy,
+              category: this.searchForm.category
+            }
+          })
+        }
+        
+        if (response.data && response.data.data) {
+          this.scenicList = response.data.data.map(item => ({
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            hotness: item.hotness,
+            rating: item.rating,
+            category: item.category,
+            ticket_price: item.ticket_price,
+            open_time: item.open_time,
+            address: item.address,
+            views: Math.floor(Math.random() * 20000) + 1000
+          }))
+          this.$message.success(`搜索完成，找到 ${this.scenicList.length} 个景点`)
+        } else {
+          this.$message.warning('未找到相关景点')
+          this.scenicList = []
+        }
       } catch (error) {
         console.error('搜索失败:', error)
-        this.$message.error('搜索失败')
+        this.$message.error('搜索失败: ' + (error.message || '网络错误'))
+        this.scenicList = []
       } finally {
         this.loading = false
       }

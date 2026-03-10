@@ -1,0 +1,245 @@
+2026-03-10 16:38:17,691 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 16:38:17,691 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 16:38:18,134 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 16:38:18,135 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:07:56,416 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:07:56,418 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:07:56,922 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:07:56,922 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:12:51,255 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:12:51,255 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:13:21,099 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:13:21,099 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:14:10,376 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:14:10,376 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:15:05,517 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:15:05,517 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:17:29,812 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:17:29,812 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:18:25,011 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:18:25,011 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:19:38,675 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:19:38,677 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:19:39,086 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:19:39,087 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:23:30,424 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:23:30,424 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:31:41,691 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:31:41,692 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:32:30,691 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:32:30,691 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:32:54,787 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:32:54,789 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:32:55,192 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:32:55,192 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:35:38,502 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:35:38,503 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:35:38,776 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:35:38,776 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:36:56,729 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:36:56,731 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 22:36:57,137 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 22:36:57,137 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:00:41,140 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:00:41,142 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:00:41,396 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:00:41,396 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:01:06,976 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:01:06,976 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:01:07,390 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:01:07,390 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:08:28,014 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:08:28,014 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:08:28,558 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:08:28,558 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:09:11,419 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:09:11,419 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:09:12,714 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:09:12,714 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:16:05,788 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:16:05,788 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:16:06,342 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:16:06,342 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:16:59,477 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:16:59,478 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:17:00,023 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:17:00,023 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:17:53,111 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:17:53,111 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:17:53,631 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:17:53,632 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:20:12,918 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:20:12,919 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:20:13,400 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:20:13,400 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:21:49,134 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:21:49,134 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:21:49,562 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:21:49,562 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:22:14,987 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:22:14,987 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:22:15,391 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:22:15,391 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:23:10,560 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:23:10,560 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:23:10,592 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:23:10,593 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:23:22,189 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:23:22,189 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:23:22,245 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:23:22,245 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:23:42,978 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:23:42,978 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:23:42,978 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:23:42,979 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:24:05,805 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:24:05,805 - tourism_system - INFO - 启动服务，端口: 8080
+2026-03-10 23:24:05,808 - tourism_system - ERROR - 数据库初始化失败: (sqlite3.IntegrityError) UNIQUE constraint failed: users.username
+[SQL: INSERT INTO users (username, password, name, phone, email, avatar, update_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, create_time]
+[parameters: ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', '13800138000', 'admin@example.com', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 23:24:05,810 - tourism_system - INFO - 启动服务，端口: 8080

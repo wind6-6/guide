@@ -45,6 +45,10 @@ def generate_scenics():
         scenics = []
         for i in range(200):
             name = scenic_names[i % len(scenic_names)] if i < len(scenic_names) else f"景点{i+1}"
+            # 生成更分散的随机经纬度
+            lat = 39.4 + random.random() * 2.2  # 北京纬度范围：39.4-41.6
+            lng = 115.7 + random.random() * 1.7  # 北京经度范围：115.7-117.4
+            
             scenics.append({
                 "name": name,
                 "description": f"{name}是一个著名的旅游景点。",
@@ -53,7 +57,9 @@ def generate_scenics():
                 "category": random.choice(categories),
                 "address": f"北京市区{i+1}号",
                 "open_time": "08:00-18:00",
-                "ticket_price": f"{random.randint(20, 200)}元"
+                "ticket_price": f"{random.randint(20, 200)}元",
+                "lat": lat,
+                "lng": lng
             })
         return scenics
 

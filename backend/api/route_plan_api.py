@@ -14,11 +14,18 @@ def get_session():
 @route_plan_bp.route('/plan', methods=['POST'])
 def plan_route():
     """路线规划（最短路径）"""
+    # 打印完整的请求数据
+    print(f"完整请求数据: {request.json}")
+    print(f"请求头: {dict(request.headers)}")
+    
     data = request.json
     start = data.get('start')
     end = data.get('end')
     strategy = data.get('strategy', 'distance')  # distance 或 time
     transport_type = data.get('transport_type', '步行')  # 步行、自行车、电瓶车、汽车
+    
+    # 打印获取的参数
+    print(f"获取的参数 - start: '{start}', end: '{end}', strategy: '{strategy}', transport_type: '{transport_type}'")
     
     if not start or not end:
         return jsonify({'status': 400, 'msg': '起点和终点不能为空'})
@@ -28,9 +35,14 @@ def plan_route():
         # 获取所有道路
         roads = session.query(Road).all()
         
-        # 构建图
+        # 构建图（添加双向边）
         graph = {}
         for road in roads:
+            # 确保节点名称不为空
+            if not road.start_node or not road.end_node:
+                continue
+                
+            # 添加正向边
             if road.start_node not in graph:
                 graph[road.start_node] = {}
             graph[road.start_node][road.end_node] = {
@@ -38,6 +50,22 @@ def plan_route():
                 'crowd_level': road.crowd_level,
                 'transport_type': road.transport_type if hasattr(road, 'transport_type') else '步行'
             }
+            # 添加反向边（假设道路是双向的）
+            if road.end_node not in graph:
+                graph[road.end_node] = {}
+            graph[road.end_node][road.start_node] = {
+                'distance': road.distance,
+                'crowd_level': road.crowd_level,
+                'transport_type': road.transport_type if hasattr(road, 'transport_type') else '步行'
+            }
+        
+        # 打印图的节点数量，用于调试
+        print(f"图中节点数量: {len(graph)}")
+        print(f"图中节点: {list(graph.keys())[:10]}")  # 打印前10个节点
+        
+        # 检查起点和终点是否在图中
+        print(f"起点 '{start}' 在图中: {start in graph}")
+        print(f"终点 '{end}' 在图中: {end in graph}")
         
         # 计算最短路径
         path, distance = ShortestPath.dijkstra(graph, start, end, strategy, transport_type)
@@ -100,9 +128,14 @@ def get_transport_options():
         # 获取所有道路
         roads = session.query(Road).all()
         
-        # 构建图
+        # 构建图（添加双向边）
         graph = {}
         for road in roads:
+            # 确保节点名称不为空
+            if not road.start_node or not road.end_node:
+                continue
+                
+            # 添加正向边
             if road.start_node not in graph:
                 graph[road.start_node] = {}
             graph[road.start_node][road.end_node] = {
@@ -110,6 +143,18 @@ def get_transport_options():
                 'crowd_level': road.crowd_level,
                 'transport_type': road.transport_type if hasattr(road, 'transport_type') else '步行'
             }
+            # 添加反向边（假设道路是双向的）
+            if road.end_node not in graph:
+                graph[road.end_node] = {}
+            graph[road.end_node][road.start_node] = {
+                'distance': road.distance,
+                'crowd_level': road.crowd_level,
+                'transport_type': road.transport_type if hasattr(road, 'transport_type') else '步行'
+            }
+        
+        # 打印图的节点数量，用于调试
+        print(f"图中节点数量: {len(graph)}")
+        print(f"图中节点: {list(graph.keys())[:10]}")  # 打印前10个节点
         
         # 获取多种交通工具的路径选项
         results = ShortestPath.get_path_with_transport_options(graph, start, end, strategy)

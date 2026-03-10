@@ -14,8 +14,8 @@ class AlgorithmConfig:
     CROWD_PENALTY = 2.0  # 拥挤度惩罚系数
     
     # 搜索算法参数
-    SEARCH_THRESHOLD = 0.6  # 模糊搜索阈值
-    MAX_SEARCH_RESULTS = 50  # 最大搜索结果数
+    SEARCH_THRESHOLD = 0.1  # 模糊搜索阈值（降低阈值以提高匹配率）
+    MAX_SEARCH_RESULTS = 200  # 最大搜索结果数
     
     # 压缩算法参数
     COMPRESSION_LEVEL = 9  # 压缩级别（1-9）

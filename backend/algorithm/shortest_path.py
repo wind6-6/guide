@@ -55,8 +55,9 @@ class ShortestPath:
             for neighbor, edge in graph[current_node].items():
                 # 检查交通工具是否允许
                 allowed_transport = edge.get('transport_type', '步行')
-                if transport_type != '步行' and allowed_transport == '步行':
-                    continue  # 非步行交通工具不能走步行专用道
+                # 步行可以走所有道路，其他交通工具只能走对应类型的道路
+                if transport_type != '步行' and allowed_transport != transport_type:
+                    continue  # 非步行交通工具只能走对应类型的道路
                 
                 # 计算权重
                 if strategy == 'distance':
@@ -80,6 +81,25 @@ class ShortestPath:
         # 重建路径
         path = []
         current = end
+        
+        # 检查起点和终点是否在图中
+        if start not in graph:
+            print(f"起点 '{start}' 不在图中")
+            return ["起点不在地图中"], 0
+        if end not in graph:
+            print(f"终点 '{end}' 不在图中")
+            return ["终点不在地图中"], 0
+        
+        # 打印起点和终点的邻居
+        print(f"起点 '{start}' 的邻居: {list(graph.get(start, {}).keys())}")
+        print(f"终点 '{end}' 的邻居: {list(graph.get(end, {}).keys())}")
+        
+        # 检查是否找到路径
+        if distances[end] == float('inf'):
+            print(f"无法找到从 '{start}' 到 '{end}' 的路径")
+            print(f"终点 '{end}' 的距离: {distances[end]}")
+            return ["无可用路径"], 0
+        
         while current:
             path.append(current)
             current = previous.get(current)
