@@ -49,13 +49,31 @@ def generate_scenics():
             lat = 39.4 + random.random() * 2.2  # 北京纬度范围：39.4-41.6
             lng = 115.7 + random.random() * 1.7  # 北京经度范围：115.7-117.4
             
+            # 生成更具体的地址
+            districts = ["东城区", "西城区", "朝阳区", "海淀区", "丰台区", "石景山区"]
+            road_types = ["大街", "路", "街", "胡同", "巷", "道"]
+            
+            district = random.choice(districts)
+            road_type = random.choice(road_types)
+            building_number = random.randint(1, 200)
+            
+            # 为不同类型的景点生成合适的地址
+            if "公园" in name:
+                address = f"北京市{district}{random.choice(['公园', '园林'])}{road_type}{building_number}号"
+            elif "博物馆" in name:
+                address = f"北京市{district}{random.choice(['文化', '艺术'])}{road_type}{building_number}号"
+            elif "大学" in name:
+                address = f"北京市{district}{random.choice(['学院', '大学'])}{road_type}{building_number}号"
+            else:
+                address = f"北京市{district}{road_type}{building_number}号"
+            
             scenics.append({
                 "name": name,
                 "description": f"{name}是一个著名的旅游景点。",
                 "hotness": round(random.uniform(5.0, 10.0), 1),
                 "rating": round(random.uniform(3.5, 5.0), 1),
                 "category": random.choice(categories),
-                "address": f"北京市区{i+1}号",
+                "address": address,
                 "open_time": "08:00-18:00",
                 "ticket_price": f"{random.randint(20, 200)}元",
                 "lat": lat,
@@ -159,76 +177,163 @@ def generate_facilities(scenic_count):
                     })
         return facilities
 
-# 生成道路数据（使用真实道路数据）
+# 生成道路数据（≥200条）
 def generate_roads(scenic_count):
+    roads = []
+    transport_types = ["步行", "自行车", "电瓶车", "汽车"]
+    
     try:
-        from database.real_map_data import BEIJING_ROADS
+        from database.real_map_data import BEIJING_SCENICS, BEIJING_ROADS
         
-        roads = []
-        transport_types = ["步行", "自行车", "电瓶车", "汽车"]
-        
-        # 首先添加真实道路数据
+        # 1. 首先添加真实道路数据
         for road_info in BEIJING_ROADS:
             roads.append({
                 "start_node": road_info["start"],
                 "end_node": road_info["end"],
                 "distance": road_info["distance"],
                 "crowd_level": road_info.get("crowd_level", random.randint(1, 5)),
-                "transport_type": random.choice(transport_types)
+                "transport_type": road_info.get("transport_type", random.choice(transport_types))
             })
         
-        # 为每个景区生成内部道路
-        for scenic_id in range(1, scenic_count + 1):
-            # 每个景区生成至少10条道路
-            for i in range(10):
+        # 2. 获取真实景区名称和坐标（只使用前20个）
+        real_scenics = BEIJING_SCENICS[:20]
+        
+        # 3. 使用最小生成树算法创建道路网络（确保连通且边最少）
+        # 构建所有可能的边
+        all_edges = []
+        for i in range(len(real_scenics)):
+            for j in range(i + 1, len(real_scenics)):
+                scenic1 = real_scenics[i]
+                scenic2 = real_scenics[j]
+                lat1 = scenic1.get("lat", 39.9)
+                lng1 = scenic1.get("lng", 116.4)
+                lat2 = scenic2.get("lat", 39.9)
+                lng2 = scenic2.get("lng", 116.4)
+                
+                distance = calculate_distance(lat1, lng1, lat2, lng2)
+                if distance < 25000:  # 25公里内
+                    all_edges.append((scenic1, scenic2, distance))
+        
+        # 按距离排序
+        all_edges.sort(key=lambda x: x[2])
+        
+        # Kruskal算法构建最小生成树
+        parent = {s["name"]: s["name"] for s in real_scenics}
+        
+        def find(x):
+            if parent[x] != x:
+                parent[x] = find(parent[x])
+            return parent[x]
+        
+        def union(x, y):
+            px, py = find(x), find(y)
+            if px != py:
+                parent[px] = py
+        
+        # 添加边直到所有节点连通
+        for scenic1, scenic2, distance in all_edges:
+            if find(scenic1["name"]) != find(scenic2["name"]):
+                union(scenic1["name"], scenic2["name"])
+                
+                # 根据距离设置道路属性
+                crowd_level = 2
+                if distance < 5000: crowd_level = 3
+                if distance < 2000: crowd_level = 4
+                
+                transport_type = "步行" if distance < 2000 else ("自行车" if distance < 5000 else "汽车")
+                
                 roads.append({
-                    "start_node": f"S{scenic_id}-Node{i}",
-                    "end_node": f"S{scenic_id}-Node{i+1}",
-                    "distance": random.randint(50, 500),
-                    "crowd_level": random.randint(1, 5),
-                    "transport_type": random.choice(transport_types)
+                    "start_node": scenic1["name"],
+                    "end_node": scenic2["name"],
+                    "distance": int(distance),
+                    "crowd_level": crowd_level,
+                    "transport_type": transport_type
                 })
         
-        # 确保至少有200条道路
-        while len(roads) < 200:
-            scenic_id = random.randint(1, scenic_count)
-            i = len(roads)
+        # 4. 添加额外的边，使总边数达到45条（20个节点的连通网络）
+        # 已添加的边数
+        current_edges = len(roads)
+        target_edges = 45
+        
+        # 获取已存在的边对
+        edge_pairs = set()
+        for r in roads:
+            edge_pairs.add((r["start_node"], r["end_node"]))
+            edge_pairs.add((r["end_node"], r["start_node"]))
+        
+        # 从剩余的边中选择最短的边添加
+        extra_edges = []
+        for scenic1, scenic2, distance in all_edges:
+            pair1 = (scenic1["name"], scenic2["name"])
+            pair2 = (scenic2["name"], scenic1["name"])
+            if pair1 not in edge_pairs and pair2 not in edge_pairs:
+                extra_edges.append((scenic1, scenic2, distance))
+        
+        # 按距离排序，添加最短的边
+        extra_edges.sort(key=lambda x: x[2])
+        edges_to_add = min(target_edges - current_edges, len(extra_edges))
+        
+        for i in range(edges_to_add):
+            scenic1, scenic2, distance = extra_edges[i]
+            crowd_level = 2
+            if distance < 5000: crowd_level = 3
+            if distance < 2000: crowd_level = 4
+            
+            transport_type = "步行" if distance < 2000 else ("自行车" if distance < 5000 else "汽车")
+            
             roads.append({
-                "start_node": f"S{scenic_id}-Node{i}",
-                "end_node": f"S{scenic_id}-Node{i+1}",
-                "distance": random.randint(50, 500),
-                "crowd_level": random.randint(1, 5),
-                "transport_type": random.choice(transport_types)
+                "start_node": scenic1["name"],
+                "end_node": scenic2["name"],
+                "distance": int(distance),
+                "crowd_level": crowd_level,
+                "transport_type": transport_type
             })
         
-        return roads
+        # 4. 为其他景区（如果有的话）创建连接
+        if scenic_count > len(real_scenics):
+            for i in range(len(real_scenics) + 1, min(scenic_count + 1, len(real_scenics) + 50)):
+                scenic_name = f"景区{i}"
+                # 只连接到最近的1个真实景区
+                roads.append({
+                    "start_node": scenic_name,
+                    "end_node": real_scenics[0]["name"],
+                    "distance": random.randint(3000, 6000),
+                    "crowd_level": random.randint(2, 4),
+                    "transport_type": "汽车"
+                })
     except ImportError:
-        # 备用模拟数据
-        roads = []
-        transport_types = ["步行", "自行车", "电瓶车", "汽车"]
-        
-        for scenic_id in range(1, scenic_count + 1):
-            for i in range(10):
+        # 备用模拟数据 - 每个节点只连接到最近的2个
+        for i in range(1, scenic_count + 1):
+            # 连接到接下来的2个节点
+            for offset in [1, 2]:
+                j = i + offset
+                if j <= scenic_count:
+                    distance = random.randint(2000, 8000)
+                    roads.append({
+                        "start_node": f"景区{i}",
+                        "end_node": f"景区{j}",
+                        "distance": distance,
+                        "crowd_level": random.randint(2, 4),
+                        "transport_type": "汽车"
+                    })
+    
+    # 5. 确保至少有200条道路
+    while len(roads) < 200:
+        # 随机选择两个景区创建道路
+        if scenic_count >= 2:
+            scenic1 = random.randint(1, min(scenic_count, 100))
+            scenic2 = random.randint(1, min(scenic_count, 100))
+            if scenic1 != scenic2:
+                distance = random.randint(2000, 8000)
                 roads.append({
-                    "start_node": f"S{scenic_id}-Node{i}",
-                    "end_node": f"S{scenic_id}-Node{i+1}",
-                    "distance": random.randint(50, 500),
-                    "crowd_level": random.randint(1, 5),
-                    "transport_type": random.choice(transport_types)
+                    "start_node": f"景区{scenic1}",
+                    "end_node": f"景区{scenic2}",
+                    "distance": distance,
+                    "crowd_level": random.randint(2, 4),
+                    "transport_type": "汽车"
                 })
-        
-        while len(roads) < 200:
-            scenic_id = random.randint(1, scenic_count)
-            i = len(roads)
-            roads.append({
-                "start_node": f"S{scenic_id}-Node{i}",
-                "end_node": f"S{scenic_id}-Node{i+1}",
-                "distance": random.randint(50, 500),
-                "crowd_level": random.randint(1, 5),
-                "transport_type": random.choice(transport_types)
-            })
-        
-        return roads
+    
+    return roads
 
 # 生成用户数据（≥10人）
 def generate_users():
@@ -333,11 +438,18 @@ def insert_initial_data():
     try:
         # 插入用户数据（≥10人）
         users = generate_users()
+        added_count = 0
         for user_data in users:
-            user = User(**user_data)
-            session.add(user)
+            existing_user = session.query(User).filter_by(username=user_data['username']).first()
+            if not existing_user:
+                user = User(**user_data)
+                session.add(user)
+                added_count += 1
+                print(f"用户 {user_data['username']} 创建成功")
+            else:
+                print(f"用户 {user_data['username']} 已存在，跳过创建")
         session.commit()
-        print(f"插入{len(users)}个用户")
+        print(f"插入{added_count}个用户")
         
         # 插入景区数据（≥200个，使用真实数据）
         scenics = generate_scenics()

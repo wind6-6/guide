@@ -2,49 +2,115 @@
   <div class="map-container">
     <div ref="mapCanvas" class="map-canvas" @mousedown="startDrag" @mousemove="onDrag" @mouseup="endDrag" @mouseleave="endDrag">
       <svg ref="svgMap" :viewBox="viewBox" preserveAspectRatio="xMidYMid meet">
-        <!-- 网格背景 -->
+        <!-- 定义渐变和滤镜 -->
         <defs>
-          <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e0e0e0" stroke-width="1"/>
-          </pattern>
+          <!-- 背景渐变 -->
+          <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+          </linearGradient>
+          
+          <!-- 节点渐变 -->
+          <radialGradient id="nodeGradient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+          </radialGradient>
+          
+          <!-- 路径节点渐变 -->
+          <radialGradient id="pathNodeGradient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+          </radialGradient>
+          
+          <!-- 阴影滤镜 -->
+          <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.15"/>
+          </filter>
+          
+          <!-- 发光滤镜 -->
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
         </defs>
-        <rect width="100%" height="100%" fill="url(#grid)" />
         
-        <!-- 边（道路） -->
+        <!-- 背景 -->
+        <rect width="100%" height="100%" fill="url(#bgGradient)" rx="12" />
+        
+        <!-- 装饰性网格点 -->
+        <g class="grid-dots" opacity="0.3">
+          <circle v-for="n in 100" :key="'dot-'+n" 
+            :cx="(n % 10) * 80 + 40" 
+            :cy="Math.floor(n / 10) * 60 + 30" 
+            r="1.5" 
+            fill="#cbd5e1" />
+        </g>
+        
+        <!-- 边（道路）- 45条路线清晰显示 -->
         <g class="edges">
-          <path
-            v-for="(edge, index) in edges"
+          <line
+            v-for="(edge, index) in visibleEdges"
             :key="'edge-'+index"
-            :d="getRoadPath(edge)"
-            :stroke="edge.color || '#ccc'"
-            :stroke-width="edge.width || 3"
-            :stroke-dasharray="edge.dashed ? '5,5' : '0'"
-            fill="none"
+            :x1="edge.x1"
+            :y1="edge.y1"
+            :x2="edge.x2"
+            :y2="edge.y2"
+            :stroke="isPathEdge(edge) ? '#3b82f6' : '#94a3b8'"
+            :stroke-width="isPathEdge(edge) ? 4 : 1.5"
+            :opacity="isPathEdge(edge) ? 1 : 0.35"
+            stroke-linecap="round"
             class="road-line"
           />
         </g>
         
-        <!-- 路径 -->
+        <!-- 路径 - 更醒目的样式 -->
         <g class="path" v-if="path.length > 1">
+          <!-- 路径阴影 -->
           <polyline
             :points="pathPoints"
             fill="none"
-            stroke="#409eff"
+            stroke="#1e40af"
+            stroke-width="8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            opacity="0.2"
+          />
+          <!-- 主路径 -->
+          <polyline
+            :points="pathPoints"
+            fill="none"
+            stroke="url(#pathGradient)"
             stroke-width="5"
             stroke-linecap="round"
             stroke-linejoin="round"
             class="path-line"
+            filter="url(#glow)"
+          />
+          <!-- 路径上的节点高亮 -->
+          <circle
+            v-for="(point, idx) in pathPointsArray"
+            :key="'path-point-'+idx"
+            :cx="point.x"
+            :cy="point.y"
+            r="8"
+            fill="url(#pathNodeGradient)"
+            stroke="#fff"
+            stroke-width="2"
+            filter="url(#shadow)"
           />
           <!-- 路径动画点 -->
-          <circle r="6" fill="#409eff" class="path-animation">
+          <circle r="5" fill="#fbbf24" filter="url(#glow)">
             <animateMotion :dur="animationDuration + 's'" repeatCount="indefinite" :path="pathD" />
           </circle>
         </g>
         
-        <!-- 节点 -->
+        <!-- 节点 - 极简风格 -->
         <g class="nodes">
           <g
-            v-for="node in nodes"
+            v-for="node in visibleNodes"
             :key="node.id"
             class="node-group"
             :transform="`translate(${node.x}, ${node.y})`"
@@ -52,36 +118,44 @@
             @mouseenter="hoveredNode = node"
             @mouseleave="hoveredNode = null"
           >
+            <!-- 路径节点外圈 -->
+            <circle
+              v-if="isPathNode(node)"
+              r="16"
+              fill="none"
+              stroke="#3b82f6"
+              stroke-width="3"
+              opacity="0.3"
+            />
             <!-- 节点圆圈 -->
             <circle
-              :r="getNodeRadius(node)"
-              :fill="getNodeColor(node)"
-              :stroke="hoveredNode === node ? '#fff' : 'none'"
-              stroke-width="3"
+              :r="isPathNode(node) ? 10 : 8"
+              :fill="isPathNode(node) ? '#3b82f6' : '#64748b'"
+              stroke="#fff"
+              stroke-width="2"
               class="node-circle"
-              :class="{ 'pulse': node.type === 'current' }"
             />
-            <!-- 节点图标 -->
+            <!-- 节点标签 - 只显示路径节点和悬停节点 -->
             <text
-              v-if="node.icon"
+              v-if="isPathNode(node) || hoveredNode === node"
+              y="-18"
               text-anchor="middle"
-              dominant-baseline="central"
               font-size="12"
-              fill="#fff"
-              class="node-icon"
-            >{{ node.icon }}</text>
-            <!-- 节点标签 -->
-            <text
-              v-if="scale > 1.2 || hoveredNode === node"
-              y="-15"
-              text-anchor="middle"
-              :font-size="hoveredNode === node ? 12 : 10"
-              :font-weight="hoveredNode === node ? 'bold' : 'normal'"
-              fill="#333"
+              font-weight="600"
+              :fill="isPathNode(node) ? '#1d4ed8' : '#475569'"
               class="node-label"
             >{{ node.name }}</text>
           </g>
         </g>
+        
+        <!-- 定义路径渐变 -->
+        <defs>
+          <linearGradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#60a5fa;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+          </linearGradient>
+        </defs>
       </svg>
     </div>
     
@@ -143,17 +217,14 @@
 </template>
 
 <script>
-import { MapLocation, Timer, Bicycle, Plus, Minus, RefreshRight } from '@element-plus/icons-vue'
+import { MapLocation, Timer, Bicycle } from '@element-plus/icons-vue'
 
 export default {
   name: 'MapViewer',
   components: {
     MapLocation,
     Timer,
-    Bicycle,
-    Plus,
-    Minus,
-    RefreshRight
+    Bicycle
   },
   props: {
     nodes: {
@@ -198,6 +269,9 @@ export default {
     pathPoints() {
       return this.path.map(p => `${p.x},${p.y}`).join(' ')
     },
+    pathPointsArray() {
+      return this.path
+    },
     pathD() {
       if (this.path.length < 2) return ''
       let d = `M ${this.path[0].x} ${this.path[0].y}`
@@ -207,8 +281,30 @@ export default {
       return d
     },
     animationDuration() {
-      // 根据路径长度计算动画时长
-      return Math.max(2, this.path.length * 0.5)
+      return Math.max(3, this.path.length * 0.8)
+    },
+    pathNodeIds() {
+      return new Set(this.path.map(p => p.id))
+    },
+    visibleNodes() {
+      // 只显示前20个节点（与后端一致）
+      return this.nodes.slice(0, 20)
+    },
+    visibleEdges() {
+      // 只显示可见节点之间的边
+      const visibleNodeIds = new Set(this.visibleNodes.map(n => n.id))
+      return this.edges.filter(e => {
+        // 找到边对应的节点
+        const startNode = this.nodes.find(n => 
+          Math.abs(n.x - e.x1) < 1 && Math.abs(n.y - e.y1) < 1
+        )
+        const endNode = this.nodes.find(n => 
+          Math.abs(n.x - e.x2) < 1 && Math.abs(n.y - e.y2) < 1
+        )
+        return startNode && endNode && 
+               visibleNodeIds.has(startNode.id) && 
+               visibleNodeIds.has(endNode.id)
+      })
     }
   },
   watch: {
@@ -262,9 +358,61 @@ export default {
       return colors[node.type] || '#909399'
     },
     getNodeRadius(node) {
+      if (this.isPathNode(node)) return 10
+      if (this.hoveredNode === node) return 9
       if (node.type === 'current') return 10
-      if (this.hoveredNode === node) return 8
-      return 6
+      return 7
+    },
+    getNodeFill(node) {
+      if (this.isPathNode(node)) return 'url(#pathNodeGradient)'
+      if (this.hoveredNode === node) return '#60a5fa'
+      return 'url(#nodeGradient)'
+    },
+    isPathNode(node) {
+      return this.pathNodeIds.has(node.id)
+    },
+    shouldShowLabel(node) {
+      // 始终显示路径上的节点标签
+      if (this.isPathNode(node)) return true
+      // 显示悬停的节点标签
+      if (this.hoveredNode === node) return true
+      // 缩放较大时显示更多标签
+      if (this.scale > 1.5) return true
+      // 默认只显示部分重要节点
+      return node.hotness > 9.0 || node.type === 'current'
+    },
+    getEdgeColor(edge) {
+      // 路径上的边使用蓝色
+      if (this.isPathEdge(edge)) return '#3b82f6'
+      // 根据拥挤度设置颜色
+      if (edge.crowd_level > 4) return '#f87171'
+      if (edge.crowd_level > 3) return '#fbbf24'
+      return '#94a3b8'
+    },
+    getEdgeWidth(edge) {
+      if (this.isPathEdge(edge)) return 4
+      if (edge.crowd_level > 3) return 3
+      return 2
+    },
+    getEdgeOpacity(edge) {
+      if (this.isPathEdge(edge)) return 1
+      // 非路径边降低透明度，避免杂乱
+      return 0.4
+    },
+    isPathEdge(edge) {
+      if (this.path.length < 2) return false
+      // 检查这条边是否在路径上
+      for (let i = 0; i < this.path.length - 1; i++) {
+        const p1 = this.path[i]
+        const p2 = this.path[i + 1]
+        // 检查边的两个端点是否匹配路径上的两个连续点
+        const match1 = Math.abs(p1.x - edge.x1) < 1 && Math.abs(p1.y - edge.y1) < 1 &&
+                       Math.abs(p2.x - edge.x2) < 1 && Math.abs(p2.y - edge.y2) < 1
+        const match2 = Math.abs(p1.x - edge.x2) < 1 && Math.abs(p1.y - edge.y2) < 1 &&
+                       Math.abs(p2.x - edge.x1) < 1 && Math.abs(p2.y - edge.y1) < 1
+        if (match1 || match2) return true
+      }
+      return false
     },
     onNodeClick(node) {
       this.$emit('node-click', node)
@@ -386,52 +534,43 @@ export default {
   transition: transform 0.3s ease;
 }
 
-/* 道路样式 */
+/* 极简道路样式 */
 .road-line {
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .road-line:hover {
-  stroke-width: 5 !important;
-  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
+  stroke-width: 3 !important;
+  opacity: 0.8 !important;
 }
 
-/* 路径样式 */
+/* 路径样式 - 简洁 */
 .path-line {
-  filter: drop-shadow(0 0 5px rgba(64, 158, 255, 0.5));
-  animation: dash 2s linear infinite;
-}
-
-@keyframes dash {
-  to {
-    stroke-dashoffset: -20;
-  }
+  filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3));
 }
 
 .path-animation {
-  filter: drop-shadow(0 0 5px rgba(64, 158, 255, 0.8));
+  filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6));
 }
 
-/* 节点样式 */
+/* 节点样式 - 极简 */
 .node-group {
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease;
 }
 
 .node-circle {
-  transition: all 0.3s ease;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: all 0.2s ease;
 }
 
 .node-group:hover .node-circle {
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
   transform: scale(1.2);
 }
 
 .node-label {
-  transition: all 0.3s ease;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
   pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 /* 脉冲动画 */

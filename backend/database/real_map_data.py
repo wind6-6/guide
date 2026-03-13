@@ -414,12 +414,29 @@ def generate_extended_scenics():
         
         name = template.format(district=district)
         if name not in existing_names:
+            # 生成更具体的地址
+            road_types = ["大街", "路", "街", "胡同", "巷", "道", " Boulevard"]
+            road_type = random.choice(road_types)
+            
+            # 生成更自然的门牌号
+            building_number = random.randint(1, 200)
+            
+            # 为不同类型的景点生成合适的地址
+            if "公园" in name:
+                address = f"北京市{district}{random.choice(['公园', '园林'])}{road_type}{building_number}号"
+            elif "博物馆" in name:
+                address = f"北京市{district}{random.choice(['文化', '艺术'])}{road_type}{building_number}号"
+            elif "大学" in name:
+                address = f"北京市{district}{random.choice(['学院', '大学'])}{road_type}{building_number}号"
+            else:
+                address = f"北京市{district}{road_type}{building_number}号"
+            
             base_scenics.append({
                 "name": name,
                 "lat": lat,
                 "lng": lng,
                 "category": category,
-                "address": f"北京市{district}路{counter}号",
+                "address": address,
                 "ticket_price": f"{random.randint(0, 100)}元" if random.random() > 0.3 else "免费",
                 "open_time": "08:00-18:00",
                 "description": f"{name}是位于北京市{district}的一个{category}类景点。",
